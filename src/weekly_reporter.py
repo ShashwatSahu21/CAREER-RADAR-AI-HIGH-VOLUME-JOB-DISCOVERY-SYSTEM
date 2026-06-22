@@ -6,7 +6,7 @@ from collections import Counter
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
 
 from src.config import (
     SEEN_JOBS_FILE,
