@@ -1,0 +1,75 @@
+name: Career Radar Job Discovery
+
+on:
+  schedule:
+    - cron: '30 0 * * *'   # 06:00 AM IST Daily (00:30 UTC)
+    - cron: '30 8 * * *'   # 02:00 PM IST Daily (08:30 UTC)
+    - cron: '30 14 * * *'  # 08:00 PM IST Daily (14:30 UTC)
+    - cron: '30 2 * * 0'   # 08:00 AM IST Sunday (02:30 UTC) - Weekly Report
+  workflow_dispatch:
+    inputs:
+      run_weekly:
+        description: 'Run weekly report instead of daily'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  run-radar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history so git pull --rebase can resolve references
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests
+        run: python -m unittest discover -s tests
+
+      - name: Run Career Radar Flow
+        env:
+          SMTP_SERVER: 'smtp.gmail.com'
+          SMTP_PORT: '587'
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          DESTINATION_EMAIL: ${{ secrets.DESTINATION_EMAIL }}
+        run: |
+          if [ "${{ github.event.inputs.run_weekly }}" = "true" ] || [ "${{ github.event.schedule }}" = "30 2 * * 0" ]; then
+            echo "Starting Weekly Analytics Report flow..."
+            python -m src.main --weekly
+          else
+            echo "Starting Daily Job Discovery flow..."
+            python -m src.main
+          fi
+
+      - name: Commit and Push Database Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/seen_jobs.json
+          # Check if there are changes to commit
+          if ! git diff-index --quiet HEAD; then
+            echo "Changes detected in seen_jobs.json. Committing..."
+            git commit -m "Auto-update seen jobs database [skip ci]"
+            # Pull with rebase to prevent conflicts if manual triggers or external commits occur
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No database changes to commit."
+          fi
