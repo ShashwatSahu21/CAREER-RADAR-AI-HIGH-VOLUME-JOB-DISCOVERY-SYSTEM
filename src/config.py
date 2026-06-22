@@ -8,9 +8,15 @@ load_dotenv()
 # =====================================================================
 SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USERNAME = os.getenv("SMTP_USERNAME", "shashwatsahu.contact@gmail.com")
+
+# Defensively handle empty environment strings from GitHub Secrets
+username_env = os.getenv("SMTP_USERNAME", "")
+SMTP_USERNAME = username_env if username_env.strip() else "shashwatsahu.contact@gmail.com"
+
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-DESTINATION_EMAIL = os.getenv("DESTINATION_EMAIL", "shashwatsahu.contact@gmail.com")
+
+dest_env = os.getenv("DESTINATION_EMAIL", "")
+DESTINATION_EMAIL = dest_env if dest_env.strip() else "shashwatsahu.contact@gmail.com"
 
 # =====================================================================
 # Database State File Settings
