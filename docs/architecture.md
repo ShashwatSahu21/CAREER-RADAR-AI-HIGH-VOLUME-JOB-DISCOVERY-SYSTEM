@@ -92,13 +92,14 @@ All crawled postings are transformed into a standardized `Job` dataclass.
 - **Negative Filters**: Discards jobs whose titles contain telecalling, generic sales, STEM trainers, teachers, or customer service terms.
 - **Experience Filtering**: Restricts results to entry-level/intern postings. It rejects titles containing senior indicators (Senior, Lead, Manager, Principal, Sr, etc.) and parses descriptions to filter out roles requiring 3+ years of experience.
 
-### 3. Keyword Scoring Engine (`src/engine.py`)
-Matches lowercase words in titles (and falls back to descriptions) against weighted keywords to calculate a score:
-- **100**: Physical AI, Embodied AI, Robotics
-- **95**: ROS2, Computer Vision, SLAM, Perception, Autonomous Systems, Motion Planning
-- **90**: Software Engineering, Python
-- **85**: AI Engineering, Machine Learning
-- **70-75**: Solutions Engineer, APM, Founder's Office
+### 3. Keyword Scoring & Geographic Filtering Engine (`src/engine.py`)
+- **Geographic Constraints**: Reject onsite hybrid/physical jobs outside of Bangalore (e.g., Hyderabad, Pune, Mumbai, USA) while accepting Bangalore onsite, Hybrid Bangalore, Remote India, and global remote jobs.
+- **Scoring System**: Matches lowercase words in titles (and falls back to descriptions) against weighted keywords to calculate a score:
+  - **100**: Product Intern, APM, Technical Product, Founder's Office, Startup Generalist
+  - **95**: Program Management, Robotics, Physical AI, Embodied AI, Mechatronics, Autonomous Systems
+  - **90**: ROS2, Computer Vision, Software Engineering, Python (85), SDE, Backend
+  - **80**: AI, Machine Learning, Data Engineer
+  - **70**: Technical Consulting, Solutions Engineer, Pre-Sales
 - **Score < 50**: Discarded.
 - **Tiers**: Categorizes matches into **Tier A** (Score > 80), **Tier B** (65-80), and **Tier C** (50-65).
 

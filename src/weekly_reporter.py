@@ -15,8 +15,9 @@ from src.config import (
     SMTP_USERNAME,
     SMTP_PASSWORD,
     DESTINATION_EMAIL,
-    CATEGORY_A_ROBOTICS,
-    CATEGORY_B_SOFTWARE
+    CATEGORY_A_PRODUCT,
+    CATEGORY_B_ROBOTICS,
+    CATEGORY_C_SOFTWARE
 )
 
 logger = logging.getLogger("CareerRadar.WeeklyReporter")
@@ -95,63 +96,67 @@ class WeeklyReporter:
         top_locations = Counter(locations).most_common(5)
         locations_str = ", ".join([f"{loc} ({count})" for loc, count in top_locations])
 
-        # 4. Most Active Sources
-        sources = [job.get("source", "Unknown") for job in jobs]
-        top_sources = Counter(sources).most_common(5)
+        # 4. Most Common Keywords in Titles
+        title_words = []
+        for job in jobs:
+            # Tokenize title into clean lowercase words/phrases
+            words = re.findall(r"\b\w+\b", job.get("title", "").lower())
+            title_words.extend([w for w in words if len(w) > 2 and w not in ["and", "for", "the", "with", "role"]])
+        top_title_keywords = Counter(title_words).most_common(8)
+        keywords_str = ", ".join([f"{word} ({count})" for word, count in top_title_keywords])
 
         # 5. Categorized Openings
-        physical_ai_jobs = []
+        product_jobs = []
+        robotics_jobs = []
         software_jobs = []
-        international_jobs = []
+        remote_jobs = []
 
         for job in jobs:
             title_lower = job.get("title", "").lower()
-            # Physical AI check
-            is_physical_ai = any(kw.lower() in title_lower for kw in CATEGORY_A_ROBOTICS)
-            if is_physical_ai:
-                physical_ai_jobs.append(job)
+            loc_lower = job.get("location", "").lower()
+            
+            # Product check
+            if any(kw.lower() in title_lower for kw in CATEGORY_A_PRODUCT):
+                product_jobs.append(job)
 
-            # Software SDE check
-            is_software = any(kw.lower() in title_lower for kw in CATEGORY_B_SOFTWARE)
-            if is_software:
+            # Robotics check
+            if any(kw.lower() in title_lower for kw in CATEGORY_B_ROBOTICS):
+                robotics_jobs.append(job)
+
+            # Software check
+            if any(kw.lower() in title_lower for kw in CATEGORY_C_SOFTWARE):
                 software_jobs.append(job)
 
-            # International Location check (outside India / contains worldwide remote)
-            loc_lower = job.get("location", "").lower()
-            is_international = False
-            if "india" not in loc_lower:
-                # Target countries or standard global locations
-                countries = ["usa", "united states", "germany", "canada", "switzerland", "netherlands", "sweden", "japan", "singapore", "remote", "worldwide"]
-                if any(c in loc_lower for c in countries):
-                    is_international = True
-            if is_international:
-                international_jobs.append(job)
+            # Remote check
+            if any(term in loc_lower for term in ["remote", "wfh", "work from home", "anywhere", "worldwide"]):
+                remote_jobs.append(job)
 
         # 6. Recommended Skills To Learn
-        recommended_skills = ["ROS2", "C++ / OOP", "Python (PyTorch)", "SLAM / Odometry", "Isaac Sim / Robotics Simulation"]
+        recommended_skills = ["ROS2", "Product Spec Writing", "Python & Backend Frameworks", "SLAM & Computer Vision", "Agile & Product Operations"]
         if top_skills:
-            # Recommend the top 3-4 skills found in postings
             recommended_skills = [skill.title() for skill, _ in top_skills[:5]]
 
         # Construct Plain Text
         text_report = f"""
 ====================================================
-CAREER RADAR WEEKLY ANALYTICS REPORT
+CAREER RADAR WEEKLY STARTUP ANALYTICS REPORT
 ====================================================
 Date: {timestamp}
 Total Opportunities Discovered: {total_discovered}
 
 📈 KEY INSIGHTS
 -------------------------------------------
-* Most Requested Skills: {skills_str if top_skills else "N/A"}
-* Top Hiring Companies: {companies_str if top_companies else "N/A"}
+* Top Hiring Startups: {companies_str if top_companies else "N/A"}
+* Top Hiring Skills: {skills_str if top_skills else "N/A"}
+* Most Common Keywords: {keywords_str if top_title_keywords else "N/A"}
 * Top Hiring Locations: {locations_str if top_locations else "N/A"}
 
 📂 CATEGORY BREAKDOWNS
 -------------------------------------------
-* Physical AI & Robotics Openings: {len(physical_ai_jobs)}
-* Software Engineering Openings: {len(software_jobs)}
-* International & Remote Openings: {len(international_jobs)}
+* Product Management & Ops Openings: {len(product_jobs)}
+* Robotics & Physical AI Openings: {len(robotics_jobs)}
+* Software Engineering SDE Openings: {len(software_jobs)}
+* Remote / WFH Opportunities: {len(remote_jobs)}
 
 🧠 RECOMMENDED SKILLS TO LEARN
 -------------------------------------------
@@ -185,13 +190,13 @@ END OF WEEKLY REPORT
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>📊 Weekly Career Analytics</h1>
-                    <p>Insights & Opportunities Summary ({timestamp})</p>
+                    <h1>📊 Weekly Startup Career Analytics</h1>
+                    <p>Bangalore & Remote Insights Summary ({timestamp})</p>
                 </div>
                 <div class="content">
                     <div class="metric-card">
                         <div class="metric-title">💡 Summary</div>
-                        <div class="metric-val">Discovered <strong>{total_discovered}</strong> total entry-level, graduate, and internship opportunities this week.</div>
+                        <div class="metric-val">Discovered <strong>{total_discovered}</strong> startup opportunities this week, optimizing for interview probability and remote/Bangalore setups.</div>
                     </div>
                     
                     <div class="grid">
@@ -202,7 +207,7 @@ END OF WEEKLY REPORT
                             </ul>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-title">📈 Top Companies Hiring</div>
+                            <div class="metric-title">📈 Top Startups Hiring</div>
                             <ul class="bullet-list">
                                 {"".join([f"<li>{comp} ({count})</li>" for comp, count in top_companies]) if top_companies else "<li>No data</li>"}
                             </ul>
@@ -212,21 +217,22 @@ END OF WEEKLY REPORT
                     <div class="metric-card">
                         <div class="metric-title">📂 Openings Breakdown</div>
                         <ul class="bullet-list">
-                            <li>🤖 Physical AI & Robotics Openings: <strong>{len(physical_ai_jobs)}</strong></li>
-                            <li>💻 Software Engineering SDE Openings: <strong>{len(software_jobs)}</strong></li>
-                            <li>🌍 International / Remote Openings: <strong>{len(international_jobs)}</strong></li>
+                            <li>💼 Product & PM Internships: <strong>{len(product_jobs)}</strong></li>
+                            <li>🤖 Robotics & Physical AI Roles: <strong>{len(robotics_jobs)}</strong></li>
+                            <li>💻 Software & SDE Roles: <strong>{len(software_jobs)}</strong></li>
+                            <li>🌍 Remote / WFH Placements: <strong>{len(remote_jobs)}</strong></li>
                         </ul>
                     </div>
 
                     <div class="metric-card">
-                        <div class="metric-title">🧠 recommended skills to learn</div>
+                        <div class="metric-title">🧠 Recommended Skills to Learn</div>
                         <ol class="bullet-list" style="list-style-type: decimal;">
                             {"".join([f"<li>{skill}</li>" for skill in recommended_skills])}
                         </ol>
                     </div>
                 </div>
                 <div class="footer">
-                    Career Radar AI &bull; Shashwat Sahu Analytics Panel
+                    Career Radar AI &bull; Shashwat Sahu Bangalore Startup Portal
                 </div>
             </div>
         </body>

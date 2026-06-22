@@ -86,6 +86,30 @@ def prune_seen_jobs(seen_jobs: Dict[str, Dict[str, Any]], max_days: int) -> Dict
         logger.info(f"Pruned {removed_count} records older than {max_days} days from seen database.")
     return pruned
 
+def is_location_acceptable(location_str: str) -> bool:
+    """Returns True if the location is Bangalore, Bengaluru, Remote, or general India fallback."""
+    loc_lower = location_str.lower()
+    
+    # If location explicitly specifies remote or global work from home, it is acceptable
+    if any(term in loc_lower for term in ["remote", "wfh", "work from home", "anywhere", "worldwide", "global", "home"]):
+        return True
+        
+    # If it is Bangalore/Bengaluru, it is acceptable
+    if "bangalore" in loc_lower or "bengaluru" in loc_lower:
+        return True
+        
+    # If it specifies other Indian cities and does not mention remote, reject
+    other_cities = ["hyderabad", "pune", "mumbai", "chennai", "noida", "gurgaon", "gurugram", "delhi", "kolkata"]
+    if any(city in loc_lower for city in other_cities):
+        return False
+        
+    # If it is just general "india" or general remote fallback
+    if "india" in loc_lower or loc_lower == "remote" or loc_lower == "":
+        return True
+        
+    # Ignore international onsite roles that require relocation
+    return False
+
 # =====================================================================
 # Job Scoring & Filtering Engine
 # =====================================================================
@@ -95,6 +119,11 @@ def compute_job_score(job: Job) -> Tuple[int, str]:
     Computes a matching score (0 to 100) based on title keywords.
     Returns the score and the corresponding Tier label.
     """
+    # 0. Location Filter (Strict Reject)
+    if not is_location_acceptable(job.location):
+        logger.debug(f"Rejecting job '{job.title}' due to location: '{job.location}'")
+        return 0, "Rejected"
+
     title_lower = job.title.lower()
     description_lower = job.description.lower() if job.description else ""
     experience_lower = job.experience.lower() if job.experience else ""

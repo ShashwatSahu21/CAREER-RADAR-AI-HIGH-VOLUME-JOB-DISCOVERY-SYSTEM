@@ -15,7 +15,7 @@ class TestEngine(unittest.TestCase):
             apply_link="http://example.com"
         )
         score, tier = compute_job_score(job)
-        self.assertEqual(score, 100)
+        self.assertEqual(score, 95)
         self.assertEqual(tier, "Tier A")
 
     def test_scoring_ros2(self):
@@ -30,7 +30,7 @@ class TestEngine(unittest.TestCase):
             apply_link="http://example.com"
         )
         score, tier = compute_job_score(job)
-        self.assertEqual(score, 100)  # Matches "Robotics" keyword which has weight 100
+        self.assertEqual(score, 95)  # Matches "Robotics" keyword which has weight 95
         self.assertEqual(tier, "Tier A")
 
     def test_scoring_software_engineer(self):
@@ -70,7 +70,7 @@ class TestEngine(unittest.TestCase):
             job_id="test_5",
             title="Senior Robotics Engineer",
             company="Advanced Bots",
-            location="USA",
+            location="Bengaluru",
             experience="Senior",
             source="Test",
             apply_link="http://example.com"
@@ -95,6 +95,36 @@ class TestEngine(unittest.TestCase):
         # Should match python or computer vision inside description with a penalty, but >= 50
         self.assertGreaterEqual(score, 50)
         self.assertIn(tier, ["Tier A", "Tier B", "Tier C"])
+
+    def test_location_filter_rejection(self):
+        """Checks that jobs in other specific cities (without remote tags) are rejected."""
+        job = Job(
+            job_id="test_location_reject",
+            title="Robotics Software Engineer",
+            company="Advanced Bots",
+            location="Hyderabad",
+            experience="Internship",
+            source="Test",
+            apply_link="http://example.com"
+        )
+        score, tier = compute_job_score(job)
+        self.assertEqual(score, 0)
+        self.assertEqual(tier, "Rejected")
+
+    def test_location_filter_acceptance_remote(self):
+        """Checks that jobs in other cities are accepted if they specify Remote."""
+        job = Job(
+            job_id="test_location_accept_remote",
+            title="Robotics Software Engineer",
+            company="Advanced Bots",
+            location="Hyderabad (Remote)",
+            experience="Internship",
+            source="Test",
+            apply_link="http://example.com"
+        )
+        score, tier = compute_job_score(job)
+        self.assertEqual(score, 95)
+        self.assertEqual(tier, "Tier A")
 
 if __name__ == "__main__":
     unittest.main()

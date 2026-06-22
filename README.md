@@ -1,6 +1,6 @@
-# 🚀 Career Radar AI – High-Volume Job Discovery System
+# 🚀 Career Radar AI – Bangalore Startup Job Discovery System
 
-Career Radar AI is a complete, production-ready, fully automated job discovery system designed to run autonomously on GitHub Actions. It continuously monitors and indexes internship, graduate, startup, and entry-level positions in Robotics, Physical AI, Embodied AI, and Software Engineering, notifying you directly in your inbox.
+Career Radar AI is a complete, production-ready, fully automated job discovery system designed to run autonomously on GitHub Actions. It continuously monitors and indexes internship, graduate, startup, and entry-level positions, prioritizing Bangalore-based onsite/hybrid roles and Remote India placements.
 
 ---
 
@@ -37,11 +37,12 @@ graph TD
 ## ✨ Features
 
 - **Automated Collection**: Queries LinkedIn Guest APIs, Naukri, Internshala, and ATS APIs (Greenhouse, Lever, Ashby, Workday) to bypass anti-bot scrapers cleanly.
-- **Scoring & Ranking**: Uses custom keyword weights (e.g., Physical AI = 100, ROS2 = 95, Software Engineering = 90) to classify listings into Tiers A, B, and C.
+- **Geographic Filtering**: Enforces a strict local constraint, prioritizing Bangalore/Bengaluru onsite and Hybrid roles, Remote India opportunities, and global remote roles. Other onsite locations (like Mumbai, Hyderabad, Pune, Delhi, etc.) are filtered out.
+- **Scoring & Ranking**: Implements custom keyword weights (Product & Founder's Office = 100, Robotics & Physical AI = 95, Software Engineering = 90, AI/ML = 80) to classify listings into Tiers A, B, and C.
 - **Strict Duplicate Exclusions**: Validates discovered opportunities against a local state (`data/seen_jobs.json`). Older entries are pruned automatically to prevent performance bloat.
 - **Flexible Filters**: Automatically ignores negative terms (Teacher, STEM Trainer, Sales, Call Center, BPO, Telecaller, etc.) and enforces experience limitations (0-2 years, Internships, Graduate Programs, Trainees).
 - **Daily Alerts**: Dispatches a categorized report to your inbox three times a day.
-- **Weekly Analytics**: Generates a summary report every Sunday showing recruiter activity, top hiring companies, popular skill tags, and recommendations.
+- **Weekly Analytics**: Generates a summary report every Sunday showing top hiring startups, popular skill tags, remote opportunities, and PM/Robotics metrics.
 - **100% Free**: Operates entirely within GitHub Actions and standard SMTP.
 
 ---

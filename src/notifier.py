@@ -268,7 +268,7 @@ class EmailNotifier:
             <div class="container">
                 <div class="header">
                     <h1>🚀 Career Radar</h1>
-                    <p>Job Search Discovery Engine</p>
+                    <p>Bangalore & Remote Opportunities</p>
                 </div>
                 
                 <div class="stats-container">
@@ -314,7 +314,7 @@ class EmailNotifier:
         logger.info(f"Preparing email report for {len(jobs)} jobs...")
         
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"🚀 Career Radar | {len(jobs)} New Opportunities Found"
+        msg["Subject"] = f"🚀 Career Radar | Bangalore & Remote Opportunities"
         msg["From"] = SMTP_USERNAME
         msg["To"] = DESTINATION_EMAIL
 
