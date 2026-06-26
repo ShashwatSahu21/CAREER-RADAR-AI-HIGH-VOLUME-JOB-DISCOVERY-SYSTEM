@@ -3898,5 +3898,70 @@
     "tier": "Tier A",
     "date_found": "2026-06-25",
     "short_summary": "New listing on LinkedIn by Firstsource in India."
+  },
+  {
+    "job_id": "linkedin_4426316182",
+    "title": "Custom Software Engineer",
+    "company": "Accenture in India",
+    "location": "Bengaluru, Karnataka, India",
+    "experience": "N/A",
+    "source": "LinkedIn",
+    "apply_link": "https://www.linkedin.com/jobs/view/4426316182",
+    "score": 90,
+    "tier": "Tier A",
+    "date_found": "2026-06-26",
+    "short_summary": "New listing on LinkedIn by Accenture in India in Bengaluru, Karnataka, India."
+  },
+  {
+    "job_id": "linkedin_4432693679",
+    "title": "Ominiverse \u2013 Software Engineer III",
+    "company": "Deloitte",
+    "location": "Bengaluru, Karnataka, India",
+    "experience": "N/A",
+    "source": "LinkedIn",
+    "apply_link": "https://www.linkedin.com/jobs/view/4432693679",
+    "score": 90,
+    "tier": "Tier A",
+    "date_found": "2026-06-26",
+    "short_summary": "New listing on LinkedIn by Deloitte in Bengaluru, Karnataka, India."
+  },
+  {
+    "job_id": "linkedin_4432644153",
+    "title": "Hardware Engineer \u2013 Robotics, LiDAR & Embedded Systems",
+    "company": "Inkers Technology",
+    "location": "Bengaluru, Karnataka, India",
+    "experience": "N/A",
+    "source": "LinkedIn",
+    "apply_link": "https://www.linkedin.com/jobs/view/4432644153",
+    "score": 95,
+    "tier": "Tier A",
+    "date_found": "2026-06-26",
+    "short_summary": "New listing on LinkedIn by Inkers Technology in Bengaluru, Karnataka, India."
+  },
+  {
+    "job_id": "linkedin_4433305401",
+    "title": "Machine Learning Engineer",
+    "company": "Votary Softech Solutions Pvt. Ltd.",
+    "location": "Bengaluru, Karnataka, India",
+    "experience": "N/A",
+    "source": "LinkedIn",
+    "apply_link": "https://www.linkedin.com/jobs/view/4433305401",
+    "score": 80,
+    "tier": "Tier A",
+    "date_found": "2026-06-26",
+    "short_summary": "New listing on LinkedIn by Votary Softech Solutions Pvt. Ltd. in Bengaluru, Karnataka, India."
+  },
+  {
+    "job_id": "linkedin_4433092324",
+    "title": "GenAI Engineer",
+    "company": "Innova ESI",
+    "location": "Bengaluru, Karnataka, India",
+    "experience": "N/A",
+    "source": "LinkedIn",
+    "apply_link": "https://www.linkedin.com/jobs/view/4433092324",
+    "score": 80,
+    "tier": "Tier A",
+    "date_found": "2026-06-26",
+    "short_summary": "New listing on LinkedIn by Innova ESI in Bengaluru, Karnataka, India."
   }
 ]
