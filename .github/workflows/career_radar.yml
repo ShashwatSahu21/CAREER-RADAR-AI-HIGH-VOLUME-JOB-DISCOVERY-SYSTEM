@@ -1,11 +1,11 @@
 name: Career Radar Job Discovery
 
 on:
-  schedule:
-    - cron: '30 0 * * *'   # 06:00 AM IST Daily (00:30 UTC)
-    - cron: '30 8 * * *'   # 02:00 PM IST Daily (08:30 UTC)
-    - cron: '30 14 * * *'  # 08:00 PM IST Daily (14:30 UTC)
-    - cron: '30 2 * * 0'   # 08:00 AM IST Sunday (02:30 UTC) - Weekly Report
+  # schedule:
+  #   - cron: '30 0 * * *'   # 06:00 AM IST Daily (00:30 UTC)
+  #   - cron: '30 8 * * *'   # 02:00 PM IST Daily (08:30 UTC)
+  #   - cron: '30 14 * * *'  # 08:00 PM IST Daily (14:30 UTC)
+  #   - cron: '30 2 * * 0'   # 08:00 AM IST Sunday (02:30 UTC) - Weekly Report
   workflow_dispatch:
     inputs:
       run_weekly:
