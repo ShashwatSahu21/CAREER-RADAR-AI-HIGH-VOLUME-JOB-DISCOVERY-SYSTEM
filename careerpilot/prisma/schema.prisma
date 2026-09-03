@@ -1,0 +1,527 @@
+// CareerPilot AI — Prisma Schema
+// Database: SQLite (migratable to PostgreSQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════
+// USER & AUTHENTICATION
+// ═══════════════════════════════════════
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  name          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  careerProfile CareerProfile?
+  baseResumes   BaseResume[]
+  jobs          Job[]
+  applications  Application[]
+  auditLogs     AuditLog[]
+  settings      UserSettings?
+}
+
+model UserSettings {
+  id                    String  @id @default(cuid())
+  userId                String  @unique
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // AI Provider
+  aiProvider            String  @default("gemini")
+  aiApiKey              String  @default("")
+
+  // Match thresholds
+  highPriorityMin       Int     @default(85)
+  strongMatchMin        Int     @default(70)
+  stretchMatchMin       Int     @default(55)
+
+  // Email
+  smtpServer            String  @default("smtp.gmail.com")
+  smtpPort              Int     @default(587)
+  smtpUsername           String  @default("")
+  smtpPassword          String  @default("")
+  destinationEmail      String  @default("")
+
+  // Workflow
+  autoGeneratePackage   Boolean @default(false)
+  requireApproval       Boolean @default(true)
+
+  // Resume layout
+  defaultSectionOrder   String  @default("header,education,experience,projects,skills,achievements")
+  preferredFont         String  @default("Calibri")
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// MASTER CAREER DATABASE
+// ═══════════════════════════════════════
+
+model CareerProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Personal Information
+  fullName    String   @default("")
+  email       String   @default("")
+  phone       String   @default("")
+  location    String   @default("")
+  linkedinUrl String   @default("")
+  githubUrl   String   @default("")
+  portfolioUrl String  @default("")
+  summary     String   @default("")
+
+  education    Education[]
+  experiences  Experience[]
+  projects     Project[]
+  skills       Skill[]
+  achievements Achievement[]
+  links        ProfileLink[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Education {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  degree          String
+  specialization  String   @default("")
+  university      String
+  graduationDate  String   @default("")
+  cgpa            String   @default("")
+  coursework      String   @default("") // JSON array stored as string
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Experience {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  company         String
+  role            String
+  startDate       String
+  endDate         String   @default("Present")
+  location        String   @default("")
+  employmentType  String   @default("") // full-time, internship, contract, etc.
+  description     String   @default("")
+  technologies    String   @default("") // JSON array
+  skills          String   @default("") // JSON array
+  domains         String   @default("") // JSON array (robotics, ai, product, etc.)
+  metrics         String   @default("") // JSON array
+  links           String   @default("") // JSON array
+
+  bullets         ExperienceBullet[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ExperienceBullet {
+  id              String   @id @default(cuid())
+  experienceId    String
+  experience      Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+
+  content         String
+  isVerified      Boolean  @default(true)
+  sortOrder       Int      @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  projectName     String
+  description     String   @default("")
+  problemStatement String  @default("")
+  solution        String   @default("")
+  technologies    String   @default("") // JSON array
+  skills          String   @default("") // JSON array
+  domains         String   @default("") // JSON array
+  metrics         String   @default("") // JSON array
+  githubUrl       String   @default("")
+  demoUrl         String   @default("")
+  portfolioUrl    String   @default("")
+
+  bullets         ProjectBullet[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ProjectBullet {
+  id              String   @id @default(cuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  content         String
+  isVerified      Boolean  @default(true)
+  sortOrder       Int      @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Skill {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  name            String
+  category        String   @default("") // Programming, AI/ML, Robotics, Tools, etc.
+  evidenceLevel   String   @default("verified") // verified, portfolio, self-reported
+  relatedProjects String   @default("") // JSON array of project IDs
+  relatedExperience String @default("") // JSON array of experience IDs
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([profileId, name])
+}
+
+model Achievement {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  title           String
+  category        String   @default("") // award, hackathon, certification, leadership, publication
+  organization    String   @default("")
+  date            String   @default("")
+  description     String   @default("")
+  link            String   @default("")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ProfileLink {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  label           String
+  url             String
+  category        String   @default("") // linkedin, github, portfolio, other
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// BASE RESUMES
+// ═══════════════════════════════════════
+
+model BaseResume {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name            String   // "Robotics Resume", "Software/AI Resume", "Product Resume"
+  track           String   // robotics, software, product
+  filePath        String   @default("")
+  fileName        String   @default("")
+  fileType        String   @default("") // docx, pdf
+  extractedContent String  @default("") // JSON: structured extracted content
+  isActive        Boolean  @default(true)
+
+  resumeVersions  ResumeVersion[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// JOBS & AI ANALYSIS
+// ═══════════════════════════════════════
+
+model Job {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Basic info
+  title           String
+  company         String
+  location        String   @default("")
+  employmentType  String   @default("")
+  description     String   @default("")
+  applicationUrl  String   @default("")
+  source          String   @default("") // linkedin, naukri, greenhouse, manual, etc.
+  sourceJobId     String   @default("") // original job ID from source
+  dateFound       DateTime @default(now())
+
+  // AI Analysis results
+  analysis        JobAnalysis?
+  keywords        JobKeyword[]
+
+  // Generated content
+  resumeVersions  ResumeVersion[]
+  coverLetters    CoverLetter[]
+  application     Application?
+
+  // Status
+  status          String   @default("DISCOVERED") // DISCOVERED, ANALYZED, HIGH_PRIORITY, PACKAGE_GENERATED, etc.
+  matchScore      Int      @default(0)
+  recommendation  String   @default("") // HIGH_PRIORITY, STRONG_MATCH, STRETCH, LOW_PRIORITY
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model JobAnalysis {
+  id                  String   @id @default(cuid())
+  jobId               String   @unique
+  job                 Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // Extracted structured data
+  seniorityLevel      String   @default("")
+  primaryDomain       String   @default("")
+  secondaryDomains    String   @default("") // JSON array
+  industry            String   @default("")
+  roleSummary         String   @default("")
+
+  // Role classification
+  primaryRole         String   @default("") // ROBOTICS_SOFTWARE, AI_ML, etc.
+  primaryConfidence   Float    @default(0)
+  secondaryRole       String   @default("")
+  secondaryConfidence Float    @default(0)
+
+  // Requirements
+  requiredSkills      String   @default("") // JSON array
+  preferredSkills     String   @default("") // JSON array
+  technologies        String   @default("") // JSON array
+  responsibilities    String   @default("") // JSON array
+  qualifications      String   @default("") // JSON array
+
+  // Match scores
+  overallMatchScore   Int      @default(0)
+  skillMatch          Int      @default(0)
+  experienceMatch     Int      @default(0)
+  projectMatch        Int      @default(0)
+  technologyMatch     Int      @default(0)
+  seniorityMatch      Int      @default(0)
+  locationMatch       Int      @default(0)
+
+  // Match details
+  strengths           String   @default("") // JSON array
+  gaps                String   @default("") // JSON array
+  missingKeywords     String   @default("") // JSON array
+
+  // Resume strategy
+  selectedBaseResume  String   @default("") // robotics, software, product
+  resumeReason        String   @default("")
+  contentStrategy     String   @default("") // JSON: selected experience/project IDs, ordering
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model JobKeyword {
+  id              String   @id @default(cuid())
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  keyword         String
+  category        String   @default("") // required_skill, preferred_skill, technology, tool, domain, soft_skill
+  isSupported     Boolean  @default(false) // true if user has verified evidence
+  supportSource   String   @default("") // reference to skill/experience/project
+
+  createdAt       DateTime @default(now())
+}
+
+// ═══════════════════════════════════════
+// RESUME VERSIONS & COVER LETTERS
+// ═══════════════════════════════════════
+
+model ResumeVersion {
+  id              String   @id @default(cuid())
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  baseResumeId    String?
+  baseResume      BaseResume? @relation(fields: [baseResumeId], references: [id])
+
+  versionNumber   Int      @default(1)
+  label           String   @default("") // e.g., "Tesla_Robotics_Engineer_v1"
+
+  // Content
+  sections        String   @default("") // JSON: full resume content structure
+  sectionOrder    String   @default("") // JSON array of section IDs
+
+  // Generated files
+  docxPath        String   @default("")
+  pdfPath         String   @default("")
+
+  // Quality scores
+  truthfulnessScore   Int  @default(0)
+  atsRelevanceScore   Int  @default(0)
+  formatScore         Int  @default(0)
+  clarityScore        Int  @default(0)
+  jobMatchScore       Int  @default(0)
+  overallQualityScore Int  @default(0)
+
+  // Claim validation
+  validationReport    String @default("") // JSON: per-bullet validation
+
+  isActive        Boolean  @default(true)
+  status          String   @default("DRAFT") // DRAFT, VALIDATED, APPROVED, REJECTED
+
+  bullets         ResumeBullet[]
+  documents       ApplicationDocument[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ResumeBullet {
+  id              String   @id @default(cuid())
+  resumeVersionId String
+  resumeVersion   ResumeVersion @relation(fields: [resumeVersionId], references: [id], onDelete: Cascade)
+
+  section         String   @default("") // experience, projects, skills, achievements
+  parentId        String   @default("") // ID of the source experience/project
+  content         String
+  sortOrder       Int      @default(0)
+
+  // Traceability
+  sourceType      String   @default("") // experience, project, skill, achievement
+  sourceId        String   @default("") // ID in master career database
+  verified        Boolean  @default(true)
+  confidence      Float    @default(1.0)
+  classification  String   @default("VERIFIED") // VERIFIED, SUPPORTED, REPHRASING, NEEDS_REVIEW, UNSUPPORTED
+
+  createdAt       DateTime @default(now())
+}
+
+model CoverLetter {
+  id              String   @id @default(cuid())
+  jobId           String
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  versionNumber   Int      @default(1)
+  letterType      String   @default("cover_letter") // cover_letter, intent_letter
+  content         String   @default("")
+
+  // Generated files
+  docxPath        String   @default("")
+  pdfPath         String   @default("")
+
+  status          String   @default("DRAFT") // DRAFT, APPROVED, REJECTED
+
+  documents       ApplicationDocument[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// APPLICATIONS
+// ═══════════════════════════════════════
+
+model Application {
+  id              String   @id @default(cuid())
+  jobId           String   @unique
+  job             Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status          String   @default("DISCOVERED")
+  // DISCOVERED, ANALYZED, HIGH_PRIORITY, PACKAGE_GENERATED,
+  // AWAITING_REVIEW, APPROVED, APPLIED, REJECTED, INTERVIEW, OFFER, SKIPPED
+
+  dateAnalyzed    DateTime?
+  dateGenerated   DateTime?
+  dateApproved    DateTime?
+  dateSubmitted   DateTime?
+
+  notes           String   @default("")
+
+  documents       ApplicationDocument[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ApplicationDocument {
+  id              String   @id @default(cuid())
+  applicationId   String
+  application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  documentType    String   // resume_docx, resume_pdf, cover_letter_docx, cover_letter_pdf
+  filePath        String
+  fileName        String
+
+  resumeVersionId String?
+  resumeVersion   ResumeVersion? @relation(fields: [resumeVersionId], references: [id])
+  coverLetterId   String?
+  coverLetter     CoverLetter? @relation(fields: [coverLetterId], references: [id])
+
+  createdAt       DateTime @default(now())
+}
+
+// ═══════════════════════════════════════
+// PORTFOLIO SYNC & VERIFICATION
+// ═══════════════════════════════════════
+
+model PortfolioSync {
+  id              String   @id @default(cuid())
+  portfolioUrl    String
+  status          String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, FAILED
+  extractedData   String   @default("") // JSON: raw extracted data
+  itemsFound      Int      @default(0)
+  itemsApproved   Int      @default(0)
+  itemsRejected   Int      @default(0)
+  errorMessage    String   @default("")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model VerificationQueue {
+  id              String   @id @default(cuid())
+  itemType        String   // experience, project, skill, achievement
+  itemData        String   // JSON: the proposed data
+  source          String   @default("portfolio") // portfolio, ai_suggestion
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  reviewedAt      DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// AUDIT LOG
+// ═══════════════════════════════════════
+
+model AuditLog {
+  id              String   @id @default(cuid())
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+
+  action          String   // job_imported, resume_generated, claim_validated, etc.
+  entity          String   @default("") // job, resume, application, etc.
+  entityId        String   @default("")
+  details         String   @default("") // JSON: additional context
+  
+  createdAt       DateTime @default(now())
+}

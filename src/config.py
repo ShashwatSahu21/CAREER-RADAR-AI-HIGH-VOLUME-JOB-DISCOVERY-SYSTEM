@@ -13,7 +13,7 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 username_env = os.getenv("SMTP_USERNAME", "")
 SMTP_USERNAME = username_env if username_env.strip() else "shashwatsahu.contact@gmail.com"
 
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").replace(" ", "").strip()
 
 dest_env = os.getenv("DESTINATION_EMAIL", "")
 DESTINATION_EMAIL = dest_env if dest_env.strip() else "shashwatsahu.contact@gmail.com"

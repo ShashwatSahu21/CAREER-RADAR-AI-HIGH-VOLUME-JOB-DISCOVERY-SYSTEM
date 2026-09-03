@@ -287,8 +287,50 @@ def run_job_discovery() -> Tuple[List[Job], int]:
     # Save updated seen jobs database
     save_seen_jobs(seen_jobs)
     
+    # Push new discovered jobs to CareerPilot AI Webhook if available
+    push_jobs_to_careerpilot(new_jobs)
+
     return new_jobs, scanned_count
+
+def push_jobs_to_careerpilot(jobs: List[Job]):
+    """Sends new discovered jobs to CareerPilot AI webhook endpoint."""
+    if not jobs:
+        return
+    import requests
+    careerpilot_url = os.getenv("CAREERPILOT_WEBHOOK_URL", "http://localhost:3000/api/jobs/import")
+    webhook_secret = os.getenv("WEBHOOK_SECRET", "")
+    headers = {"Content-Type": "application/json"}
+    if webhook_secret:
+        headers["Authorization"] = f"Bearer {webhook_secret}"
+
+    payload = {
+        "jobs": [
+            {
+                "job_title": j.title,
+                "company": j.company,
+                "location": j.location,
+                "job_description": j.description or j.short_summary,
+                "application_url": j.apply_link,
+                "source": j.source,
+                "date_found": j.date_found,
+                "score": j.score,
+                "tier": j.tier,
+                "job_id": j.job_id
+            }
+            for j in jobs
+        ]
+    }
+
+    try:
+        res = requests.post(careerpilot_url, json=payload, headers=headers, timeout=5)
+        if res.status_code == 200:
+            logger.info(f"Successfully pushed {len(jobs)} jobs to CareerPilot AI Webhook ({careerpilot_url}).")
+        else:
+            logger.warning(f"CareerPilot AI Webhook returned status {res.status_code}: {res.text}")
+    except Exception as e:
+        logger.debug(f"CareerPilot AI server not reachable at {careerpilot_url}: {e}")
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     run_job_discovery()
+
