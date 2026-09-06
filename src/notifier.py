@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
 import logging
-from typing import List
+from typing import Any, Dict, List, Optional
 
 from src.config import (
     SMTP_SERVER,
@@ -18,17 +18,28 @@ logger = logging.getLogger("CareerRadar.Notifier")
 
 class EmailNotifier:
     @staticmethod
-    def generate_plain_text_report(jobs: List[Job], scanned_count: int) -> str:
-        """Generates a structured plain text version of the job report."""
+    def generate_plain_text_report(
+        jobs: List[Job],
+        scanned_count: int,
+        auto_apply_summary: Optional[Dict[str, Any]] = None
+    ) -> str:
+        """Generates a structured plain text version of the job report and auto-apply stats."""
         timestamp = datetime.now().strftime("%Y-%m-%d %I:%M %p")
         new_count = len(jobs)
         
         report = []
         report.append("====================================================")
-        report.append("CAREER RADAR REPORT")
+        report.append("CAREER RADAR REPORT & AUTO-APPLY SUMMARY")
         report.append(f"Date: {timestamp}")
         report.append(f"Jobs Scanned: {scanned_count}")
-        report.append(f"New Jobs: {new_count}")
+        report.append(f"New Matches: {new_count}")
+
+        if auto_apply_summary:
+            applied = auto_apply_summary.get("applied", 0)
+            failed = auto_apply_summary.get("failed", 0)
+            mode = auto_apply_summary.get("mode", "api-only")
+            report.append(f"🤖 AutoApplied Today: {applied} (Failed: {failed}, Mode: {mode})")
+
         report.append("====================================================\n")
 
         # Group jobs by tier
@@ -84,7 +95,11 @@ class EmailNotifier:
         return "\n".join(report)
 
     @staticmethod
-    def generate_html_report(jobs: List[Job], scanned_count: int) -> str:
+    def generate_html_report(
+        jobs: List[Job],
+        scanned_count: int,
+        auto_apply_summary: Optional[Dict[str, Any]] = None
+    ) -> str:
         """Generates a highly polished premium HTML version of the job report."""
         timestamp = datetime.now().strftime("%Y-%m-%d %I:%M %p")
         new_count = len(jobs)
@@ -117,6 +132,22 @@ class EmailNotifier:
                 """
                 cards.append(card)
             return "\n".join(cards)
+
+        auto_apply_banner = ""
+        if auto_apply_summary:
+            applied = auto_apply_summary.get("applied", 0)
+            failed = auto_apply_summary.get("failed", 0)
+            auto_apply_banner = f"""
+            <div style="margin: 20px; padding: 15px; background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border: 1px solid #4338ca; border-radius: 8px;">
+                <div style="font-size: 14px; font-weight: 700; color: #a5b4fc; display: flex; align-items: center; gap: 8px;">
+                    🤖 AutoApply Autonomous Dispatch Summary
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #e0e7ff; display: flex; gap: 20px;">
+                    <span>✅ <b>{applied}</b> Applications Submitted</span>
+                    <span>⚠️ <b>{failed}</b> Flagged for Review</span>
+                </div>
+            </div>
+            """
 
         html_body = f"""
         <!DOCTYPE html>
@@ -286,6 +317,8 @@ class EmailNotifier:
                     </div>
                 </div>
 
+                {auto_apply_banner}
+
                 {f'<div class="section-title">🔥 Tier A (Highly Relevant)</div>' + build_cards_html(tier_a, "tier-a") if tier_a else ""}
                 {f'<div class="section-title">⭐ Tier B (Good Matches)</div>' + build_cards_html(tier_b, "tier-b") if tier_b else ""}
                 {f'<div class="section-title">📌 Tier C (Secondary Matches)</div>' + build_cards_html(tier_c, "tier-c") if tier_c else ""}
@@ -301,10 +334,15 @@ class EmailNotifier:
         return html_body
 
     @classmethod
-    def send_email(cls, jobs: List[Job], scanned_count: int) -> bool:
-        """Sends the daily report email containing discovered jobs."""
-        if not jobs:
-            logger.info("No new jobs to report. Skipping email notification.")
+    def send_email(
+        cls,
+        jobs: List[Job],
+        scanned_count: int,
+        auto_apply_summary: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """Sends the daily report email containing discovered jobs and auto-apply summary."""
+        if not jobs and not auto_apply_summary:
+            logger.info("No new jobs or apply updates to report. Skipping email notification.")
             return True
 
         if not SMTP_USERNAME or not SMTP_PASSWORD:
@@ -314,13 +352,13 @@ class EmailNotifier:
         logger.info(f"Preparing email report for {len(jobs)} jobs...")
         
         msg = MIMEMultipart("alternative")
-        msg["Subject"] = f"🚀 Career Radar | Bangalore & Remote Opportunities"
+        msg["Subject"] = f"🚀 Career Radar | Daily Job Discovery & AutoApply Report"
         msg["From"] = SMTP_USERNAME
         msg["To"] = DESTINATION_EMAIL
 
         # Generate report formats
-        text_content = cls.generate_plain_text_report(jobs, scanned_count)
-        html_content = cls.generate_html_report(jobs, scanned_count)
+        text_content = cls.generate_plain_text_report(jobs, scanned_count, auto_apply_summary)
+        html_content = cls.generate_html_report(jobs, scanned_count, auto_apply_summary)
 
         msg.attach(MIMEText(text_content, "plain"))
         msg.attach(MIMEText(html_content, "html"))

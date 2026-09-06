@@ -1,0 +1,38 @@
+[
+  {
+    "job_id": "gh_test_1",
+    "job_title": "Software Engineer - AI/Robotics",
+    "company": "Anthropic",
+    "platform": "greenhouse_api",
+    "status": "DRY_RUN",
+    "success": true,
+    "confirmation_id": "",
+    "error_message": "",
+    "match_score": 92,
+    "timestamp": "2026-09-06T07:00:43.343102"
+  },
+  {
+    "job_id": "lever_test_1",
+    "job_title": "Full Stack Engineer",
+    "company": "Palantir",
+    "platform": "lever_api",
+    "status": "DRY_RUN",
+    "success": true,
+    "confirmation_id": "",
+    "error_message": "",
+    "match_score": 88,
+    "timestamp": "2026-09-06T07:00:45.108761"
+  },
+  {
+    "job_id": "ashby_test_1",
+    "job_title": "Robotics Software Engineer",
+    "company": "OpenAI",
+    "platform": "ashby_api",
+    "status": "DRY_RUN",
+    "success": true,
+    "confirmation_id": "",
+    "error_message": "",
+    "match_score": 85,
+    "timestamp": "2026-09-06T07:00:46.070779"
+  }
+]

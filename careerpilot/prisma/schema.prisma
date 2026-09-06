@@ -58,6 +58,23 @@ model UserSettings {
   // Resume layout
   defaultSectionOrder   String  @default("header,education,experience,projects,skills,achievements")
   preferredFont         String  @default("Calibri")
+
+  // AutoApply Configuration
+  autoApplyEnabled      Boolean @default(false)
+  autoApplyThreshold    Int     @default(85)  // Min match score for full auto-submit
+  dailyApplicationLimit Int     @default(50)
+  tierALimit            Int     @default(0)   // 0 = unlimited for Tier A
+  tierBLimit            Int     @default(30)
+  tierCLimit            Int     @default(20)
+  enableLinkedIn        Boolean @default(true)
+  enableNaukri          Boolean @default(true)
+  enableGreenhouseApi   Boolean @default(true)
+  enableLeverApi        Boolean @default(true)
+  enableAshbyApi        Boolean @default(true)
+  enableWorkday         Boolean @default(true)
+  enableGenericForms    Boolean @default(false) // Disabled by default — riskier
+  applicationDelayMin   Int     @default(180) // Min seconds between browser applications
+  applicationDelayMax   Int     @default(420) // Max seconds between browser applications
   
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
@@ -82,12 +99,28 @@ model CareerProfile {
   portfolioUrl String  @default("")
   summary     String   @default("")
 
+  // Standard Application Answers (pre-filled for auto-apply)
+  noticePeriod      String   @default("Immediate")
+  expectedCTC       String   @default("")
+  currentCTC        String   @default("")
+  willingToRelocate Boolean  @default(true)
+  workAuthorization String   @default("Indian Citizen")
+  gender            String   @default("")   // Optional EEO
+  veteranStatus     String   @default("")   // Optional EEO
+  disabilityStatus  String   @default("")   // Optional EEO
+  passportPhotoPath String   @default("")
+  dateOfBirth       String   @default("")
+  nationality       String   @default("Indian")
+  languagesKnown    String   @default("[\"English\", \"Hindi\"]")
+  yearsOfExperience String   @default("0-1")
+
   education    Education[]
   experiences  Experience[]
   projects     Project[]
   skills       Skill[]
   achievements Achievement[]
   links        ProfileLink[]
+  standardAnswers StandardAnswer[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -447,7 +480,7 @@ model Application {
 
   status          String   @default("DISCOVERED")
   // DISCOVERED, ANALYZED, HIGH_PRIORITY, PACKAGE_GENERATED,
-  // AWAITING_REVIEW, APPROVED, APPLIED, REJECTED, INTERVIEW, OFFER, SKIPPED
+  // AWAITING_REVIEW, APPROVED, SUBMITTING, APPLIED, REJECTED, INTERVIEW, OFFER, SKIPPED
 
   dateAnalyzed    DateTime?
   dateGenerated   DateTime?
@@ -456,7 +489,13 @@ model Application {
 
   notes           String   @default("")
 
+  // AutoApply fields
+  autoApplyEnabled Boolean @default(false)
+  priority         Int     @default(0)  // Higher = apply first
+  platform         String  @default("") // greenhouse_api, lever_api, linkedin_browser, etc.
+
   documents       ApplicationDocument[]
+  submissions     ApplicationSubmission[]
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -510,6 +549,58 @@ model VerificationQueue {
 }
 
 // ═══════════════════════════════════════
+// STANDARD ANSWERS (Pre-cached Q&A)
+// ═══════════════════════════════════════
+
+model StandardAnswer {
+  id              String   @id @default(cuid())
+  profileId       String
+  profile         CareerProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  questionPattern String   // keyword pattern: "why.*join|why.*company|motivation"
+  category        String   // "motivation", "strength", "weakness", "salary", "relocation", "cover_letter", etc.
+  answer          String   // Pre-approved answer template with {{company}} {{role}} placeholders
+  priority        Int      @default(0) // Higher = preferred when multiple patterns match
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ═══════════════════════════════════════
+// APPLICATION SUBMISSIONS (Audit Trail)
+// ═══════════════════════════════════════
+
+model ApplicationSubmission {
+  id              String   @id @default(cuid())
+  applicationId   String
+  application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  platform        String   // "greenhouse_api", "lever_api", "ashby_api", "linkedin_browser", "naukri_browser", "workday_browser", "generic_browser"
+  submissionMethod String  // "api" or "browser"
+
+  // Form data snapshot
+  formDataJson    String   @default("{}")  // Full JSON of what was submitted
+  answeredQuestions String @default("[]") // JSON array of {question, answer, confidence}
+
+  // Files used
+  resumePath      String   @default("")
+  coverLetterPath String   @default("")
+
+  // Result
+  status          String   @default("PENDING") // PENDING, SUBMITTING, SUBMITTED, FAILED, NEEDS_REVIEW
+  errorMessage    String   @default("")
+  screenshotPath  String   @default("") // Screenshot of completed form
+  confirmationId  String   @default("") // ATS confirmation/application ID if returned
+
+  // Timestamps
+  attemptedAt     DateTime @default(now())
+  completedAt     DateTime?
+  retryCount      Int      @default(0)
+
+  createdAt       DateTime @default(now())
+}
+
+// ═══════════════════════════════════════
 // AUDIT LOG
 // ═══════════════════════════════════════
 
@@ -518,8 +609,8 @@ model AuditLog {
   userId          String?
   user            User?    @relation(fields: [userId], references: [id])
 
-  action          String   // job_imported, resume_generated, claim_validated, etc.
-  entity          String   @default("") // job, resume, application, etc.
+  action          String   // job_imported, resume_generated, claim_validated, application_submitted, etc.
+  entity          String   @default("") // job, resume, application, submission, etc.
   entityId        String   @default("")
   details         String   @default("") // JSON: additional context
   

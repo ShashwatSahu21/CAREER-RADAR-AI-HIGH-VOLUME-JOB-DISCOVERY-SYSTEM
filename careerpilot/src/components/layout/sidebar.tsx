@@ -19,6 +19,7 @@ import { useState } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "AutoApply", href: "/autoapply", icon: Zap },
   { name: "Jobs", href: "/jobs", icon: Briefcase },
   { name: "Career Profile", href: "/profile", icon: User },
   { name: "Base Resumes", href: "/resumes", icon: FileText },
