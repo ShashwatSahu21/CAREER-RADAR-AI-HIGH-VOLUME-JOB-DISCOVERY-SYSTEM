@@ -124,6 +124,52 @@
       "bullets": [
         "Designed and built a 12-DOF quadruped integrating mechanical design, embedded electronics, motor control, Raspberry Pi 4, ESP32, IMU-feedback stabilization, and Python-based inverse kinematics."
       ]
+    },
+    {
+      "projectName": "Finity — Premium AI Financial Companion",
+      "description": "Production-grade AI financial management and investment platform with real-time tax guidance, budget automation, and probabilistic Monte Carlo wealth projection.",
+      "technologies": ["React 18", "FastAPI", "Three.js", "Supabase", "Sarvam AI", "Groq LLM", "Scikit-learn"],
+      "githubUrl": "https://github.com/ShashwatSahu21",
+      "bullets": [
+        "Production-Grade Platform: Designed a financial platform with a minimalist, Notion-inspired user interface.",
+        "AI Financial Coach: Provides context-aware guidance on Indian taxation, investments, and budgeting.",
+        "Advanced Simulation: Built an investment simulator with probabilistic Monte Carlo visualizations.",
+        "Smart Budgeting: Features a 50/30/20 budget framework with automated expense categorization."
+      ]
+    },
+    {
+      "projectName": "RAVR — Hyperlocal Cultural Radar",
+      "description": "Spotify-for-events discovery platform centered on urban culture and nightlife in Bangalore with real-time sync, Vibe Match scoring, and interactive radar maps.",
+      "technologies": ["Next.js 16", "React 19", "Supabase", "Leaflet", "Real-Time Sync", "UX Design"],
+      "githubUrl": "https://github.com/ShashwatSahu21",
+      "demoUrl": "https://vercel.com",
+      "bullets": [
+        "Urban Culture Radar: A 'Spotify for events' platform centered on urban culture and nightlife in Bangalore with interactive city radar maps.",
+        "Real-Time Sync: Features Supabase-powered real-time synchronization and custom 'Vibe Match' scoring.",
+        "Premium UX: Implemented a high-impact UI with magnetic navigation and custom cursor trails."
+      ]
+    },
+    {
+      "projectName": "NyaySathi: Voice-First Legal Intelligence System",
+      "description": "Voice-first legal intelligence platform converting spoken local dialects into structured legal workflows, automated drafting, and context-aware RAG retrievals.",
+      "technologies": ["Python", "FastAPI", "Qdrant", "Voice AI", "RAG", "Vector Database"],
+      "githubUrl": "https://github.com/ShashwatSahu21",
+      "bullets": [
+        "Voice-First Interaction: Enables citizens to explain legal issues through speech in local dialects, automatically converting intent into structured legal workflows.",
+        "Intelligent Drafting: Automatically drafts petitions, affidavits, complaints, and legal filings, while predicting case outcome probabilities and risk assessments.",
+        "Semantic Search (RAG): Integrated Qdrant Vector Database for semantic search and context-aware RAG retrievals over Indian legal documentation."
+      ]
+    },
+    {
+      "projectName": "Loan Genie: AI-Powered Loan Assessment & Assistant",
+      "description": "AI-powered loan assessment suite featuring real-time ML eligibility classification, multilingual lip-synced 3D digital assistant, and bank-grade security.",
+      "technologies": ["React 18", "FastAPI", "Three.js", "Supabase", "Groq LLM", "Random Forest", "3D Avatar AI"],
+      "githubUrl": "https://github.com/ShashwatSahu21",
+      "bullets": [
+        "Smart Eligibility Checker: Engineered a Random Forest Classifier trained on key financial features to predict loan approvals in real-time.",
+        "3D Digital Assistant: Deployed 'Amol', a lip-synchronized 3D digital assistant using Three.js and Groq LLM to communicate dynamically in 11 Indian languages with text-to-speech.",
+        "Bank-Level Security: Integrated Supabase Auth to enable role-based dashboard access, encrypted data policies, and secure file handling for user documents."
+      ]
     }
   ],
 

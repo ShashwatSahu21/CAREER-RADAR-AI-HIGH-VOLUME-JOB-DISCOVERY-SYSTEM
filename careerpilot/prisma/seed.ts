@@ -297,6 +297,145 @@ async function main() {
     },
   });
 
+  const p4 = await prisma.project.create({
+    data: {
+      profileId: profile.id,
+      projectName: "Finity — Premium AI Financial Companion",
+      description: "Production-grade financial platform with real-time AI tax/investment guidance, budget automation, and probabilistic Monte Carlo wealth projection.",
+      technologies: JSON.stringify(["React 18", "FastAPI", "Three.js", "Supabase", "Sarvam AI", "Groq LLM", "Scikit-learn"]),
+      domains: JSON.stringify(["Software & AI", "Fintech", "AI Guidance", "Wealth Projection"]),
+      githubUrl: "https://github.com/ShashwatSahu21",
+    },
+  });
+  await prisma.projectBullet.createMany({
+    data: [
+      {
+        projectId: p4.id,
+        content: "Production-Grade Platform: Designed a financial platform with a minimalist, Notion-inspired user interface.",
+        isVerified: true,
+        sortOrder: 0,
+      },
+      {
+        projectId: p4.id,
+        content: "AI Financial Coach: Provides context-aware guidance on Indian taxation, investments, and budgeting.",
+        isVerified: true,
+        sortOrder: 1,
+      },
+      {
+        projectId: p4.id,
+        content: "Advanced Simulation: Built an investment simulator with probabilistic Monte Carlo visualizations.",
+        isVerified: true,
+        sortOrder: 2,
+      },
+      {
+        projectId: p4.id,
+        content: "Smart Budgeting: Features a 50/30/20 budget framework with automated expense categorization.",
+        isVerified: true,
+        sortOrder: 3,
+      },
+    ],
+  });
+
+  const p5 = await prisma.project.create({
+    data: {
+      profileId: profile.id,
+      projectName: "RAVR — Hyperlocal Cultural Radar",
+      description: "A 'Spotify for events' platform centered on urban culture and nightlife in Bangalore with real-time sync, Vibe Match scoring, and interactive city radar maps.",
+      technologies: JSON.stringify(["Next.js 16", "React 19", "Supabase", "Leaflet", "Real-Time Sync"]),
+      domains: JSON.stringify(["Full-Stack & Web", "Event Discovery", "Real-Time Maps", "UX Design"]),
+      githubUrl: "https://github.com/ShashwatSahu21",
+      demoUrl: "https://vercel.com",
+    },
+  });
+  await prisma.projectBullet.createMany({
+    data: [
+      {
+        projectId: p5.id,
+        content: "Urban Culture Radar: A 'Spotify for events' platform centered on urban culture and nightlife in Bangalore with interactive city radar maps.",
+        isVerified: true,
+        sortOrder: 0,
+      },
+      {
+        projectId: p5.id,
+        content: "Real-Time Sync: Features Supabase-powered real-time synchronization and custom 'Vibe Match' scoring.",
+        isVerified: true,
+        sortOrder: 1,
+      },
+      {
+        projectId: p5.id,
+        content: "Premium UX: Implemented a high-impact UI with magnetic navigation and custom cursor trails.",
+        isVerified: true,
+        sortOrder: 2,
+      },
+    ],
+  });
+
+  const p6 = await prisma.project.create({
+    data: {
+      profileId: profile.id,
+      projectName: "NyaySathi: Voice-First Legal Intelligence System",
+      description: "Voice-first legal intelligence platform converting spoken local dialects into structured legal workflows, automated drafting, and context-aware RAG retrievals.",
+      technologies: JSON.stringify(["Python", "FastAPI", "Qdrant", "Voice AI", "RAG", "Vector Database"]),
+      domains: JSON.stringify(["Legal Tech & Voice AI", "Legaltech", "Voice AI", "RAG Systems"]),
+      githubUrl: "https://github.com/ShashwatSahu21",
+    },
+  });
+  await prisma.projectBullet.createMany({
+    data: [
+      {
+        projectId: p6.id,
+        content: "Voice-First Interaction: Enables citizens to explain legal issues through speech in local dialects, automatically converting intent into structured legal workflows.",
+        isVerified: true,
+        sortOrder: 0,
+      },
+      {
+        projectId: p6.id,
+        content: "Intelligent Drafting: Automatically drafts petitions, affidavits, complaints, and legal filings, while predicting case outcome probabilities and risk assessments.",
+        isVerified: true,
+        sortOrder: 1,
+      },
+      {
+        projectId: p6.id,
+        content: "Semantic Search (RAG): Integrated Qdrant Vector Database for semantic search and context-aware RAG retrievals over Indian legal documentation.",
+        isVerified: true,
+        sortOrder: 2,
+      },
+    ],
+  });
+
+  const p7 = await prisma.project.create({
+    data: {
+      profileId: profile.id,
+      projectName: "Loan Genie: AI-Powered Loan Assessment & Assistant",
+      description: "AI-powered loan assessment suite featuring real-time ML eligibility classification, multilingual lip-synced 3D digital assistant, and bank-grade security.",
+      technologies: JSON.stringify(["React 18", "FastAPI", "Three.js", "Supabase", "Groq LLM", "Random Forest", "3D Avatar AI"]),
+      domains: JSON.stringify(["Fintech & Assistant AI", "Fintech", "3D Avatar AI", "ML Classifier"]),
+      githubUrl: "https://github.com/ShashwatSahu21",
+    },
+  });
+  await prisma.projectBullet.createMany({
+    data: [
+      {
+        projectId: p7.id,
+        content: "Smart Eligibility Checker: Engineered a Random Forest Classifier trained on key financial features to predict loan approvals in real-time.",
+        isVerified: true,
+        sortOrder: 0,
+      },
+      {
+        projectId: p7.id,
+        content: "3D Digital Assistant: Deployed 'Amol', a lip-synchronized 3D digital assistant using Three.js and Groq LLM to communicate dynamically in 11 Indian languages with text-to-speech.",
+        isVerified: true,
+        sortOrder: 1,
+      },
+      {
+        projectId: p7.id,
+        content: "Bank-Level Security: Integrated Supabase Auth to enable role-based dashboard access, encrypted data policies, and secure file handling for user documents.",
+        isVerified: true,
+        sortOrder: 2,
+      },
+    ],
+  });
+
   // 7. Seed Skills
   // 7. Seed Skills from Master Portfolio
   await prisma.skill.deleteMany({ where: { profileId: profile.id } });
