@@ -128,12 +128,72 @@
   ],
 
   "skills": [
-    "Python", "C++", "C", "JavaScript", "SQL", "TypeScript",
-    "ROS2", "Arduino", "Raspberry Pi", "ESP32", "STM32",
-    "Motor Control", "Sensor Integration", "Inverse Kinematics", "Gazebo", "PyBullet", "Fusion 360",
-    "PyTorch", "TensorFlow", "Scikit-Learn", "Computer Vision", "OpenCV",
-    "Next.js", "React", "Node.js", "FastAPI", "REST APIs", "Git", "Docker", "Linux"
+    "ROS2",
+    "Arduino",
+    "Raspberry Pi",
+    "Gazebo / PyBullet",
+    "RViz",
+    "Python",
+    "C++",
+    "C / Embedded C",
+    "React.js",
+    "FastAPI",
+    "HTML / CSS",
+    "JavaScript",
+    "SQL",
+    "TensorFlow",
+    "PyTorch",
+    "Scikit-learn",
+    "OpenCV / YOLO",
+    "Keras",
+    "CNN / RNN",
+    "NumPy / Pandas",
+    "Git / GitHub",
+    "Fusion 360 / CAD",
+    "Jupyter / Anaconda",
+    "SciPy / Matplotlib",
+    "Embedded Robotics",
+    "Motor Control",
+    "Inverse Kinematics",
+    "Sensor Integration",
+    "Computer Vision",
+    "Linux"
   ],
+
+  "categorizedSkills": {
+    "Robotics & Physical AI": [
+      { "name": "ROS2", "proficiency": "90%" },
+      { "name": "Arduino", "proficiency": "92%" },
+      { "name": "Raspberry Pi", "proficiency": "88%" },
+      { "name": "Gazebo / PyBullet", "proficiency": "85%" },
+      { "name": "RViz", "proficiency": "85%" }
+    ],
+    "Programming & Web Tech": [
+      { "name": "Python", "proficiency": "96%" },
+      { "name": "C++", "proficiency": "88%" },
+      { "name": "C / Embedded C", "proficiency": "85%" },
+      { "name": "React.js", "proficiency": "88%" },
+      { "name": "FastAPI", "proficiency": "84%" },
+      { "name": "HTML / CSS", "proficiency": "93%" },
+      { "name": "JavaScript", "proficiency": "80%" },
+      { "name": "SQL", "proficiency": "78%" }
+    ],
+    "AI & ML": [
+      { "name": "TensorFlow", "proficiency": "88%" },
+      { "name": "PyTorch", "proficiency": "86%" },
+      { "name": "Scikit-learn", "proficiency": "98%" },
+      { "name": "OpenCV / YOLO", "proficiency": "85%" },
+      { "name": "Keras", "proficiency": "84%" },
+      { "name": "CNN / RNN", "proficiency": "87%" },
+      { "name": "NumPy / Pandas", "proficiency": "88%" }
+    ],
+    "Tools & Platforms": [
+      { "name": "Git / GitHub", "proficiency": "92%" },
+      { "name": "Fusion 360 / CAD", "proficiency": "85%" },
+      { "name": "Jupyter / Anaconda", "proficiency": "90%" },
+      { "name": "SciPy / Matplotlib", "proficiency": "84%" }
+    ]
+  },
 
   "standardAnswers": [
     {

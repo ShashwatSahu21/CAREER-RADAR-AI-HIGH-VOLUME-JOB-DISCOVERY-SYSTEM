@@ -298,46 +298,48 @@ async function main() {
   });
 
   // 7. Seed Skills
+  // 7. Seed Skills from Master Portfolio
   await prisma.skill.deleteMany({ where: { profileId: profile.id } });
   const skillsToSeed = [
-    { name: "Python", category: "Languages" },
-    { name: "C++", category: "Languages" },
-    { name: "C", category: "Languages" },
-    { name: "JavaScript", category: "Languages" },
-    { name: "SQL", category: "Languages" },
+    // Robotics & Physical AI
+    { name: "ROS2", category: "Robotics & Physical AI" },
+    { name: "Arduino", category: "Robotics & Physical AI" },
+    { name: "Raspberry Pi", category: "Robotics & Physical AI" },
+    { name: "Gazebo / PyBullet", category: "Robotics & Physical AI" },
+    { name: "RViz", category: "Robotics & Physical AI" },
 
-    { name: "ROS2", category: "Robotics & Embedded" },
-    { name: "Arduino", category: "Robotics & Embedded" },
-    { name: "Raspberry Pi", category: "Robotics & Embedded" },
-    { name: "ESP32", category: "Robotics & Embedded" },
-    { name: "STM32", category: "Robotics & Embedded" },
-    { name: "Motor Control", category: "Robotics & Embedded" },
-    { name: "Sensor Integration", category: "Robotics & Embedded" },
-    { name: "Inverse Kinematics", category: "Robotics & Embedded" },
-    { name: "Gazebo", category: "Robotics & Embedded" },
-    { name: "PyBullet", category: "Robotics & Embedded" },
-    { name: "Fusion 360", category: "Robotics & Embedded" },
+    // Programming & Web Tech
+    { name: "Python", category: "Programming & Web Tech" },
+    { name: "C++", category: "Programming & Web Tech" },
+    { name: "C / Embedded C", category: "Programming & Web Tech" },
+    { name: "React.js", category: "Programming & Web Tech" },
+    { name: "FastAPI", category: "Programming & Web Tech" },
+    { name: "HTML / CSS", category: "Programming & Web Tech" },
+    { name: "JavaScript", category: "Programming & Web Tech" },
+    { name: "SQL", category: "Programming & Web Tech" },
 
-    { name: "PyTorch", category: "AI & ML" },
+    // AI & ML
     { name: "TensorFlow", category: "AI & ML" },
+    { name: "PyTorch", category: "AI & ML" },
     { name: "Scikit-learn", category: "AI & ML" },
-    { name: "OpenCV", category: "AI & ML" },
-    { name: "YOLO", category: "AI & ML" },
-    { name: "CNNs / RNNs", category: "AI & ML" },
-    { name: "Signal Processing", category: "AI & ML" },
-    { name: "Computer Vision", category: "AI & ML" },
-    { name: "Predictive Learning", category: "AI & ML" },
-    { name: "Continual Learning", category: "AI & ML" },
+    { name: "OpenCV / YOLO", category: "AI & ML" },
+    { name: "Keras", category: "AI & ML" },
+    { name: "CNN / RNN", category: "AI & ML" },
+    { name: "NumPy / Pandas", category: "AI & ML" },
 
-    { name: "FastAPI", category: "Software & Product" },
-    { name: "REST APIs", category: "Software & Product" },
-    { name: "Git / GitHub", category: "Software & Product" },
-    { name: "Linux", category: "Software & Product" },
-    { name: "RAG / Qdrant", category: "Software & Product" },
-    { name: "LLM Integration", category: "Software & Product" },
-    { name: "Data Analysis", category: "Software & Product" },
-    { name: "Product Development", category: "Software & Product" },
-    { name: "Cross-functional Leadership", category: "Software & Product" },
+    // Tools & Platforms
+    { name: "Git / GitHub", category: "Tools & Platforms" },
+    { name: "Fusion 360 / CAD", category: "Tools & Platforms" },
+    { name: "Jupyter / Anaconda", category: "Tools & Platforms" },
+    { name: "SciPy / Matplotlib", category: "Tools & Platforms" },
+
+    // Core Domain Verification
+    { name: "Embedded Robotics", category: "Robotics & Physical AI" },
+    { name: "Motor Control", category: "Robotics & Physical AI" },
+    { name: "Inverse Kinematics", category: "Robotics & Physical AI" },
+    { name: "Sensor Integration", category: "Robotics & Physical AI" },
+    { name: "Computer Vision", category: "AI & ML" },
+    { name: "Linux", category: "Tools & Platforms" },
   ];
 
   await prisma.skill.createMany({
