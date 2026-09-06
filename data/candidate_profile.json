@@ -6,14 +6,14 @@
   "linkedinUrl": "https://www.linkedin.com/in/shashwatsahu21",
   "githubUrl": "https://github.com/ShashwatSahu21",
   "portfolioUrl": "https://shashwatsahu-portfolio-website.vercel.app/",
-  "summary": "Robotics and AI engineering student with hands-on experience building autonomous robotic platforms, computer vision systems, and full-stack software solutions.",
+  "summary": "Robotics & AI Engineer specializing in Physical AI, Autonomous Systems, ROS2, Embedded Control Architectures, and Technical Product Management.",
   
   "noticePeriod": "Immediate",
   "expectedCTC": "Negotiable",
   "currentCTC": "0",
   "willingToRelocate": true,
   "workAuthorization": "Indian Citizen",
-  "yearsOfExperience": "0-1",
+  "yearsOfExperience": "1-2",
   "nationality": "Indian",
   "dateOfBirth": "",
   "languagesKnown": ["English", "Hindi"],
@@ -22,9 +22,144 @@
   "disabilityStatus": "I do not wish to answer",
   "passportPhotoPath": "",
 
-  "education": [],
-  "experiences": [],
-  "projects": [],
-  "skills": [],
-  "standardAnswers": []
+  "education": [
+    {
+      "degree": "B.E. Robotics & Artificial Intelligence",
+      "specialization": "Robotics & Artificial Intelligence",
+      "university": "Bangalore Institute of Technology, Bengaluru",
+      "graduationDate": "2027",
+      "cgpa": "2023–2027",
+      "coursework": [
+        "Robotics",
+        "Artificial Intelligence",
+        "Physical AI",
+        "Autonomous Systems",
+        "Embedded Systems",
+        "Computer Vision",
+        "Control Systems"
+      ]
+    }
+  ],
+
+  "experiences": [
+    {
+      "company": "Incanto Dynamics",
+      "role": "AI & Robotics Operations Manager Intern",
+      "startDate": "2025",
+      "endDate": "Present",
+      "location": "Bengaluru, India",
+      "employmentType": "internship",
+      "technologies": ["Robotics", "AI-driven Systems", "System Validation", "Deployment", "Robotic Workflows"],
+      "bullets": [
+        "Supported testing, integration, and operational deployment of robotics and AI-driven systems in real-world environments.",
+        "Worked across system validation, deployment, and technical operations; contributed to evaluating and improving the reliability of integrated robotic workflows."
+      ]
+    },
+    {
+      "company": "Tech Analogy",
+      "role": "Robotics Intern",
+      "startDate": "2024",
+      "endDate": "2025",
+      "location": "India",
+      "employmentType": "internship",
+      "technologies": ["ROS", "Robotic Automation", "Software Simulation", "System Integration"],
+      "bullets": [
+        "Worked on robotic automation and software simulation, contributing to the development and evaluation of robotics workflows.",
+        "Gained hands-on exposure to ROS-based system integration and robotics software environments."
+      ]
+    },
+    {
+      "company": "AIESEC in India",
+      "role": "Senior Product Manager",
+      "startDate": "2024",
+      "endDate": "2025",
+      "location": "India",
+      "employmentType": "leadership",
+      "technologies": ["Funnel Optimization", "Workflow Optimization", "Data-driven Iteration", "Agile"],
+      "bullets": [
+        "Engineered and optimized acquisition and conversion workflows, generating ₹1.6L in direct value and contributing toward a ₹5.4L entity-wide milestone.",
+        "Improved funnel efficiency by 35% and conversion performance by 40% through experimentation, workflow optimization, and data-driven iteration; led a 5-member cross-functional team."
+      ]
+    },
+    {
+      "company": "1Stop.ai",
+      "role": "Artificial Intelligence Intern",
+      "startDate": "Apr 2024",
+      "endDate": "Jun 2024",
+      "location": "Remote",
+      "employmentType": "internship",
+      "technologies": ["Python", "Machine Learning", "API-based AI Integration", "Model Deployment"],
+      "bullets": [
+        "Worked on ML models and supported API-based AI integration, gaining exposure across model experimentation and deployment-oriented workflows."
+      ]
+    }
+  ],
+
+  "projects": [
+    {
+      "projectName": "PARASYTE — Adaptive Robotic Octopod",
+      "description": "8-legged embodied AI system for autonomous locomotion and navigation featuring hybrid SNN–RNN architecture with self-supervised behavioral adaptation.",
+      "technologies": ["Embodied AI", "Robot Learning", "Embedded Robotics", "SNN-RNN", "Surprise Detection", "Continual Learning"],
+      "githubUrl": "https://github.com/ShashwatSahu21",
+      "bullets": [
+        "Architecting an 8-legged embodied AI system for autonomous locomotion and navigation through predictive sensor-error minimization, without engineered gait tables, reward functions, or simulation pre-training.",
+        "Building a hybrid SNN–RNN architecture with adaptive surprise detection, gradient-based credit assignment, prioritized failure replay, and continual-learning mechanisms for self-supervised behavioral adaptation."
+      ]
+    },
+    {
+      "projectName": "SynaptIArm-6X — Neural-Augmented Robotic Manipulator",
+      "description": "6-DOF manipulator translating EMG/EEG-derived biosignals into robotic actions using real-time signal processing and ML-based intent recognition.",
+      "technologies": ["Physical AI", "Embedded ML", "EMG/EEG Signal Processing", "Inverse Kinematics", "Servo Control"],
+      "githubUrl": "https://github.com/ShashwatSahu21/synapticx-6x",
+      "bullets": [
+        "Developed a 6-DOF manipulator translating EMG/EEG-derived biosignals into robotic actions using real-time signal processing and ML-based intent recognition.",
+        "Achieved 94% intent-detection accuracy with <30 ms inference latency; integrated filtering, feature extraction, servo control, and inverse-kinematics-based manipulation."
+      ]
+    },
+    {
+      "projectName": "Custom 12-DOF Quadruped Robot (Shashwat's Bot)",
+      "description": "Custom 12-DOF quadruped integrating mechanical design, embedded electronics, motor control, Raspberry Pi 4, ESP32, and Python inverse kinematics.",
+      "technologies": ["Embedded Robotics", "Motion Control", "Raspberry Pi 4", "ESP32", "IMU Feedback", "Python Inverse Kinematics"],
+      "githubUrl": "https://github.com/ShashwatSahu21",
+      "bullets": [
+        "Designed and built a 12-DOF quadruped integrating mechanical design, embedded electronics, motor control, Raspberry Pi 4, ESP32, IMU-feedback stabilization, and Python-based inverse kinematics."
+      ]
+    }
+  ],
+
+  "skills": [
+    "Python", "C++", "C", "JavaScript", "SQL", "TypeScript",
+    "ROS2", "Arduino", "Raspberry Pi", "ESP32", "STM32",
+    "Motor Control", "Sensor Integration", "Inverse Kinematics", "Gazebo", "PyBullet", "Fusion 360",
+    "PyTorch", "TensorFlow", "Scikit-Learn", "Computer Vision", "OpenCV",
+    "Next.js", "React", "Node.js", "FastAPI", "REST APIs", "Git", "Docker", "Linux"
+  ],
+
+  "standardAnswers": [
+    {
+      "category": "motivation",
+      "questionPattern": "why.*join|why.*work.*here|why.*company|interest.*in.*role",
+      "answer": "I am deeply inspired by {{company}}'s technological leadership and high-impact engineering culture. With my background in Physical AI, autonomous systems, robotics, and full-stack software development, I am eager to apply my hands-on problem solving skills to contribute directly to {{company}}'s mission while scaling mission-critical systems."
+    },
+    {
+      "category": "relocation",
+      "questionPattern": "willing.*relocate|relocation",
+      "answer": "Yes, I am fully open and willing to relocate to {{location}} or any required location for this role."
+    },
+    {
+      "category": "notice",
+      "questionPattern": "notice.*period|how.*soon.*start",
+      "answer": "I have an Immediate availability / notice period and can start as soon as required."
+    },
+    {
+      "category": "work_authorization",
+      "questionPattern": "authorized.*work|work.*authorization|legally.*authorized",
+      "answer": "Yes, I am an Indian citizen and fully authorized to work without restrictions."
+    },
+    {
+      "category": "sponsorship",
+      "questionPattern": "sponsorship|require.*visa",
+      "answer": "No, I do not require visa sponsorship for employment in India."
+    }
+  ]
 }
