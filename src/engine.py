@@ -287,10 +287,61 @@ def run_job_discovery() -> Tuple[List[Job], int]:
     # Save updated seen jobs database
     save_seen_jobs(seen_jobs)
     
+    # Enqueue relevant jobs (Tier A & Tier B) for AutoApply
+    enqueue_jobs_for_autoapply(new_jobs)
+
     # Push new discovered jobs to CareerPilot AI Webhook if available
     push_jobs_to_careerpilot(new_jobs)
 
     return new_jobs, scanned_count
+
+def enqueue_jobs_for_autoapply(jobs: List[Job]):
+    """Enqueues newly discovered matching jobs into data/apply_queue.json."""
+    if not jobs:
+        return
+
+    queue_file = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "data", "apply_queue.json"
+    )
+    os.makedirs(os.path.dirname(queue_file), exist_ok=True)
+
+    existing_queue = []
+    if os.path.exists(queue_file):
+        try:
+            with open(queue_file, "r") as f:
+                existing_queue = json.load(f)
+        except Exception:
+            existing_queue = []
+
+    existing_ids = {j.get("job_id") for j in existing_queue}
+    added_count = 0
+
+    for job in jobs:
+        if job.job_id in existing_ids:
+            continue
+        # Filter for high relevance (Tier A or Tier B)
+        if job.score >= TIER_B_MIN:
+            existing_queue.append({
+                "job_id": job.job_id,
+                "title": job.title,
+                "company": job.company,
+                "application_url": job.apply_link,
+                "source": job.source,
+                "match_score": job.score,
+                "priority": 1 if job.tier == "Tier A" else 0,
+                "recommendation": "HIGH_PRIORITY" if job.tier == "Tier A" else "STRONG_MATCH",
+            })
+            existing_ids.add(job.job_id)
+            added_count += 1
+
+    try:
+        with open(queue_file, "w") as f:
+            json.dump(existing_queue, f, indent=2)
+        if added_count > 0:
+            logger.info(f"Enqueued {added_count} relevant jobs into AutoApply queue ({queue_file}).")
+    except Exception as e:
+        logger.error(f"Failed to write to apply_queue.json: {e}")
 
 def push_jobs_to_careerpilot(jobs: List[Job]):
     """Sends new discovered jobs to CareerPilot AI webhook endpoint."""
